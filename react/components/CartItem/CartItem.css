@@ -1,0 +1,40 @@
+.CartItem {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 100%;
+}
+
+.trash {
+    color: #1E64DD;
+    margin-right: 10px;
+    padding-bottom: 15px;
+}
+
+.CartItem_name {
+    font-size: 20px;
+}
+
+.CartItem:hover {
+    color:#61dafb;
+}
+
+.lineHorizontal {
+    border-bottom: 1px solid #BBC0C9;
+    width: 100%;
+}
+
+.CartItem_quantity {
+    font-size: 20px;
+    position: absolute;
+    left: 26%;
+}
+
+.center {
+    width: 20%;
+    text-align: center;
+}
+
+.CartItem > .center {
+    padding: 0 0 15px;
+}
