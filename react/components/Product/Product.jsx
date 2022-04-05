@@ -1,53 +1,59 @@
 import './Product.css';
 
-export const Product = function ({product,setIsProductUpdated = null}) {
+export const Product = function ({product,setCartUpdated = null}) {
 
     /**
      * Manages the action of removing a product from the basket
      */
-    function handleMinusClick(e) {
-        if(product.cart > 0) {
+   async function handleClick(productId, amount) {
+       await fetch('/api/cart/add', {
+           method: "post",
+           headers: {
+               "Accept": "application/jon",
+               'Content-Type': "application/json"
+           },
+           "body": JSON.stringify( {
+               "product_id": productId,
+               "quantity": amount,
+           })
+       })
+       // on peut pas avoir un product en dessous de 0
+        if(product.cart > 0 || amount === 0) {
             product.cart -= 1;
-            setIsProductUpdated(true);
         }
+        setCartUpdated(true);
     }
 
     /**
-     *  Manages the add a product action of the basket
+     * Display a message, when the product is  not unavailable
      */
-    function handlePlusClick(e) {
-        if(product.cart < product.stock) {
-            product.cart += 1;
-            setIsProductUpdated(true);
-        }
-    }
-
-    /**
-     * Display a alert, when the product is  not unavailable
-     */
-    function handleDoubleClick(e) {
-        if(product.cart === 0 && product.stock === 0){
-            alert("Cet article est indisponible pour le moment !");
+    function handleAlertStockClick(e) {
+        if(product.cart === 0  && product.stock === 0) {
+            <p className="alert-stock" style={{display: 'flex'}} >
+                Cet article est indisponible pour le moment !
+            </p>
+            console.log("Cet article n'est plus dipo !");
         }
     }
 
     return (
         <div className="Product" id={product.id}>
             <div className="image">
-                <img src={(require(`./../../../assets/images/${product.image}`))} alt={product.name} />
+                <img src={'/uploads/' + product.image} alt={product.name} />
             </div>
             <div className="content">
-                <p className="price">{product.price}</p>
+                <p className="price">$ {product.price}</p>
                 <h1>{product['name']}</h1>
                 <p className="description">{product.description}</p>
                 <div className="flexRow">
                     <div className={"QuantitySelector" +
-                        (product.stock === 0 ? "product-disabled" : "")
+                        (product.stock === 0 ? " product-disabled" : "")
                     }>
-                        <button onClick={handleMinusClick}> - </button>
+                        <button onClick={() => handleClick(product.id, 0)}> - </button>
                         <div>{product.cart}</div>
-                        <button onClick={handlePlusClick} onDoubleClick={handleDoubleClick}> + </button>
+                        <button onClick={ () => handleClick(product.id, 1)} onDoubleClick={handleAlertStockClick}> + </button>
                     </div>
+                    <p className={"alert-stock" + (product.stock === 0)}/>
                 </div>
             </div>
         </div>

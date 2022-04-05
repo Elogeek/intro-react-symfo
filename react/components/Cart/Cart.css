@@ -21,14 +21,14 @@ button {
     border: 1px solid #8C8E92;
 }
 
-.btn_refresh_cart {
+.btn_empty_basket {
     margin-top: 55px;
     margin-left: 18%;
     background-color: #8C8E92;
     color: white;
 }
 
-.btn_refresh_cart:hover {
+.btn_empty_basket:hover {
     background: #61dafb;
     color: white;
 }

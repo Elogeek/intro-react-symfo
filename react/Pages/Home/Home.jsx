@@ -1,7 +1,6 @@
 import "./Home.css";
 
 import {useEffect, useState} from "react";
-
 import {Category} from "../../components/Category/Category.jsx";
 import {Cart} from "../../components/Cart/Cart.jsx";
 import {ProductList} from "../../components/ProductList/ProductList.jsx";
@@ -9,24 +8,37 @@ import {ProductList} from "../../components/ProductList/ProductList.jsx";
 export const Home = function() {
 
     const [products, setProducts] = useState([]);
-    const [isProductUpdated, setIsProductUpdated] = useState(false);
+
+    useEffect( () => {
+        async function getProducts() {
+            const response = await fetch('/api/products');
+            setProducts(await response.json());
+        }
+        getProducts().catch( () => console.log('Impossible recover the products'));
+    }, []);
+
+    const [cartUpdated, setCartUpdated] = useState(false);
     const [category, setCategory] = useState(0);
 
     // For que l'user se retouve in the site
-    useEffect(() => {document.title = 'Home'}, []);
+    useEffect(() => {
+        document.title = 'Home'
+    }, []);
 
-    if(isProductUpdated) {
+    if(cartUpdated) {
         setProducts(products);
-        setIsProductUpdated(false);
+        setCartUpdated(false);
     }
 
     return (
         <>
             <div className="container">
-                <Cart products={products}  setIsProductUpdated={setIsProductUpdated}/>
+                <Cart setCartUpdated={setCartUpdated}/>
                 <div className="container_product">
                     <Category setCategory ={setCategory} />
-                    <ProductList category={category} products={products} setIsProductUpdated={setIsProductUpdated}/>
+                    <ProductList
+                        category={category} products={products} setCartUpdated={setCartUpdated}
+                    />
                 </div>
             </div>
         </>

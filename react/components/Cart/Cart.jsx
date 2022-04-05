@@ -1,28 +1,38 @@
 import './Cart.css';
 import {CartItem} from "../CartItem/CartItem";
-import {useEffect} from "react";
+import {useEffect,useState} from "react";
 
-export const Cart = function ({products, setIsProductUpdated}) {
+export const Cart = function ({ cartUpdated, setCartUpdated}) {
 
+    const [cartItems, setCartItems] = useState([]);
     useEffect( () => {
-        alert("Hello word");
-    });
+        async function getCart() {
+            const response = await fetch('/api/cart');
+            const data = await response.json();
+            setCartItems(data.cartItems);
+            setCartUpdated(false);
+        }
+
+        getCart()
+            .catch( () => console.log("Erreur avec la récupération du panier"));
+    }, [cartUpdated]);
 
     /**
-     * Vider le panier
+     * Empty a basket
      */
-    function handleClick(e) {
-        products.map(product => product.cart = 0);
-        setIsProductUpdated(true);
+    function handleBasketEmptyClick(e) {
+        cartItems.map(cartItem => cartItem.product.cart === 0);
+        setCartUpdated(true);
+        console.log("Basket is empty !");
     }
 
     return (
         <div className="Cart">
             <h1 className="title">Vos articles</h1>
-            {products.map(product =>
-                product.cart > 0 && <CartItem key={product.id} product={product}
+            {cartItems.map((cartItem) =>
+                <CartItem key={cartItem.product.id} cartItem={cartItem}
                 />)}
-            <button className="btn_refresh_cart" onClick={handleClick}>Vider le panier</button>
+            <button className="btn_empty_basket" onClick={handleBasketEmptyClick}>Vider le panier</button>
         </div>
     );
 }

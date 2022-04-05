@@ -59,9 +59,10 @@ class Product
     /**
      * @param mixed $category
      */
-    public function setCategory($category): void
+    public function setCategory($category): self
     {
         $this->category = $category;
+        return $this;
     }
 
     /**
@@ -75,9 +76,10 @@ class Product
     /**
      * @param mixed $description
      */
-    public function setDescription($description): void
+    public function setDescription($description): self
     {
         $this->description = $description;
+        return $this;
     }
 
     public function getPrice(): ?string
@@ -103,9 +105,10 @@ class Product
     /**
      * @param mixed $stock
      */
-    public function setStock($stock): void
+    public function setStock($stock): self
     {
         $this->stock = $stock;
+        return $this;
     }
 
     /**
@@ -119,9 +122,10 @@ class Product
     /**
      * @param mixed $image
      */
-    public function setImage($image): void
+    public function setImage($image): self
     {
         $this->image = $image;
+        return $this;
     }
 
 }
