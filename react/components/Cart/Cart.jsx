@@ -1,10 +1,13 @@
 import './Cart.css';
 import {CartItem} from "../CartItem/CartItem";
 import {useEffect,useState} from "react";
+import {Loader} from "../Loader/Loader";
 
 export const Cart = function ({ cartUpdated, setCartUpdated}) {
 
+    const [isLoading, setIsLoading] = useState(false);
     const [cartItems, setCartItems] = useState([]);
+
     useEffect( () => {
         async function getCart() {
             const response = await fetch('/api/cart');
@@ -14,7 +17,7 @@ export const Cart = function ({ cartUpdated, setCartUpdated}) {
         }
 
         getCart()
-            .catch( () => console.log("Erreur avec la récupération du panier"));
+            .catch( () => console.log("Oups, erreur avec la récupération du panier"));
     }, [cartUpdated]);
 
     /**
@@ -29,9 +32,13 @@ export const Cart = function ({ cartUpdated, setCartUpdated}) {
     return (
         <div className="Cart">
             <h1 className="title">Vos articles</h1>
-            {cartItems.map((cartItem) =>
-                <CartItem key={cartItem.product.id} cartItem={cartItem}
-                />)}
+            {isLoading ? (
+                <Loader/>
+            ) : (
+                cartItems.map((cartItem) => (
+                    <CartItem key={cartItem.product.id} cartItem={cartItem}/>
+                ))
+            )}
             <button className="btn_empty_basket" onClick={handleBasketEmptyClick}>Vider le panier</button>
         </div>
     );

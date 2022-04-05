@@ -12,7 +12,6 @@ export const Header = function () {
                 <Link to="/">Home</Link>
                 <Link to="/user-account">User Account</Link>
                 <Link to="/contact">Contact</Link>
-                <Link to="/promotions?color=purple">Promotions</Link>
             </nav>
         </div>
     );
