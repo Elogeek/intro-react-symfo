@@ -56,6 +56,7 @@ class CartController extends AbstractController
         } // Si le cart existe et que la quantité passée et actuelle donne 0, on supprime le produit au cart
         elseif ($cartItem && $cartItem->getQuantity() + $quantity <= 0) {
             $this->entityManager->remove($cartItem);
+            $product->setStock($product->getStock() + -$quantity);
             $this->entityManager->flush();
             $this->entityManager->refresh($cart);
             return $this->json($cart); // Refresh et return sinon le cart item s'ajoute a nouveau avec dernière quantité connue
@@ -63,14 +64,21 @@ class CartController extends AbstractController
         elseif ($cartItem && $cartItem->getQuantity() + $quantity > $product->getStock()) {
             return $this->returnError("Le stock ne permet pas d'ajouter autant de ce produit");
         }
-        elseif ($cartItem && $cartItem->getQuantity() + $quantity > 0) {
-            //Mise à jour de la quantité pour le cart item (existant ou nouveau)
+        // Handles the case where the stock is at 0
+        elseif ($product->getStock() === 0 && $quantity !== -1) {
+           return $this->returnError("Le stock ne permet pas d'ajouter autant de ce produit");
+        }
+        // Si le produit est déjà dans le panier ("cas normal")
+        elseif($cartItem && $cartItem->getQuantity() + $quantity > 0) {
+            // Mise à jour de la quantity pour le cartItem (existant ou new)
             $cartItem->setQuantity($cartItem->getQuantity() + $quantity);
-        } //On gère le cas ou on nous demande autre chose
+        }
+        // Dans les autres cas
         else {
             return $this->returnError("Vous tentez d'ajouter une quantité 0 ou moins d'un produit, c'est impossible");
         }
 
+        $product->setStock($product->getStock() + -$quantity);
         $this->entityManager->persist($cartItem);
         $this->entityManager->flush();
         $this->entityManager->refresh($cart);
@@ -80,11 +88,19 @@ class CartController extends AbstractController
         );
     }
 
-    private function returnError(string $errorMessage): JsonResponse
-    {
+    private function returnError(string $errorMessage): JsonResponse {
         return $this->json([
             'error' => true,
             'message' => $errorMessage
         ]);
     }
+
+    #[Route('/api/cart/delete', name: 'api_cart_delete')]
+    public function deleteCart(sessionCartService $sessionCartService): JsonResponse {
+        $sessionCartService->deleteSessionCart();
+        return $this->json([
+            'status' => true,
+        ]);
+    }
+
 }

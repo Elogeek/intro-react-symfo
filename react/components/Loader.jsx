@@ -1,4 +1,4 @@
-import loader from "./../../../assets/images/loading.gif";
+import loader from "../../assets/images/loading.gif";
 
 export const Loader = function () {
 

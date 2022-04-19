@@ -50,4 +50,15 @@ class SessionCartService {
     {
         $this->session->set('cart_id', $cart->getId());
     }
+
+    /**
+     * Delete cart from session
+     * @return void
+     */
+    public function deleteSessionCart(): void {
+        $cart = $this->getCart();
+        $this->entityManager->remove($cart);
+        $this->entityManager->flush();
+        $this->session->remove('cart_id');
+    }
 }
